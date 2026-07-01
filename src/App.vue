@@ -1,11 +1,12 @@
 <script setup lang="tsx">
 import { ref } from 'vue'
-import Day1_taskCounter from './components/day1_taskCounter.vue'
-import TaskListView from './components/TaskListView_day2.vue'
+import Day1_taskCounter from './components/Day_1/day1_taskCounter.vue'
+import TaskListView from './components/Day_2/TaskListView_day2.vue'
 
 const navItems = [
   { id: 'task-counter', label: 'Task Counter', day: 'Day 1' },
   { id: 'task-list',    label: 'Task List',    day: 'Day 2' },
+  { id: 'router',       label: 'Task Router',  day: 'Day 3' },
 ]
 
 const active = ref('task-counter')
@@ -30,6 +31,7 @@ const active = ref('task-counter')
     <main class="content">
       <Day1_taskCounter v-if="active === 'task-counter'" />
       <TaskListView     v-if="active === 'task-list'" />
+      <RouterView       v-if="active === 'router'" />
     </main>
   </div>
 </template>
