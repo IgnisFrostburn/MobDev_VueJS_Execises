@@ -3,12 +3,14 @@ import { ref } from 'vue'
 import Day1_taskCounter from './components/Day_1/day1_taskCounter.vue'
 import TaskListView from './components/Day_2/TaskListView_day2.vue'
 import Day_4TaskListView from './components/Day_4/TaskListView.vue'
+import Day_5TodoListView from './components/Day_5/TodoListView.vue'
 
 const navItems = [
   { id: 'task-counter', label: 'Task Counter', day: 'Day 1' },
   { id: 'task-list',    label: 'Task List',    day: 'Day 2' },
   { id: 'router',       label: 'Task Router',  day: 'Day 3' },
   { id: 'pinia',       label: 'Task Pinia',  day: 'Day 4' },
+  { id: 'api',       label: 'Task API',  day: 'Day 5' },
 ]
 
 const active = ref('task-counter')
@@ -35,6 +37,7 @@ const active = ref('task-counter')
       <TaskListView     v-if="active === 'task-list'" />
       <RouterView       v-if="active === 'router'" />
       <Day_4TaskListView       v-if="active === 'pinia'" />
+      <Day_5TodoListView       v-if="active === 'api'" />
     </main>
   </div>
 </template>
