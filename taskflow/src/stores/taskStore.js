@@ -61,7 +61,7 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 
 /**
- * @typedef {{ id: number, name: string, done: boolean }} Task
+ * @typedef {{ id: number, name: string, done: boolean, photo?: string }} Task
  */
 
 // TODO 1: Export a useTaskStore function using defineStore
@@ -101,8 +101,13 @@ export const useTaskStore = defineStore('tasks', () => {
     tasks.value = tasks.value.filter(t=>t.id!==id)
   }
 
+  function addPhotoToTask(id, path) {
+    const task = tasks.value.find(t => t.id === id)
+    if (task) task.photo = path
+  }
+
   // TODO 7: Return everything the component needs to access
-  return { tasks, totalCount, doneCount, pendingCount, addTask, toggleTask, removeTask }
+  return { tasks, totalCount, doneCount, pendingCount, addTask, toggleTask, removeTask, addPhotoToTask }
 })
 
 

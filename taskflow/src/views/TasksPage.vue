@@ -29,6 +29,9 @@
             @ionChange.stop="toggleTask(task.id)"
             @click.stop
           />
+          <ion-thumbnail v-if="task.photo" slot="start">
+            <ion-img :src="task.photo" />
+          </ion-thumbnail>
           <ion-label :class="{ 'task-done': task.done }">{{ task.name }}</ion-label>
           <ion-button
             slot="end"
@@ -59,7 +62,7 @@
 import {
   IonPage, IonHeader, IonToolbar, IonTitle, IonContent,
   IonList, IonItem, IonLabel, IonButton, IonIcon,
-  IonCheckbox, IonFab, IonFabButton,
+  IonCheckbox, IonFab, IonFabButton, IonThumbnail, IonImg,
   alertController,
 } from '@ionic/vue';
 import { addOutline, trashOutline } from 'ionicons/icons';

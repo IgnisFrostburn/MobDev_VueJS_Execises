@@ -39,6 +39,17 @@
               @ionChange="toggleTask(task.id)"
             />
           </ion-item>
+
+          <ion-item>
+            <ion-button expand="block" @click="capturePhoto(task.id)">Add Photo</ion-button>
+          </ion-item>
+
+          <ion-item v-if="task.photo">
+            <ion-label>
+              <p class="field-label">Photo</p>
+              <ion-img :src="task.photo" class="task-photo" />
+            </ion-label>
+          </ion-item>
         </ion-list>
       </div>
 
@@ -54,8 +65,9 @@
 <script setup lang="ts">
 import {
   IonPage, IonHeader, IonToolbar, IonTitle, IonContent,
-  IonList, IonItem, IonLabel, IonButtons, IonBackButton, IonCheckbox,
+  IonList, IonItem, IonLabel, IonButtons, IonBackButton, IonCheckbox, IonButton, IonImg,
 } from '@ionic/vue';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
@@ -64,13 +76,28 @@ import { useTaskStore } from '@/stores/taskStore';
 const route = useRoute();
 const store = useTaskStore();
 const { tasks } = storeToRefs(store);
-const { toggleTask } = store;
+const { toggleTask, addPhotoToTask } = store;
 
 const taskId = computed(() => Number(route.params.id));
 const task = computed(() => tasks.value.find(t => t.id === taskId.value));
 const backHref = computed(() =>
   route.query.from === 'completed' ? '/tabs/completed' : '/tabs/tasks'
 );
+
+async function capturePhoto(id: number) {
+  try {
+    const photo = await Camera.getPhoto({
+      resultType: CameraResultType.Uri,
+      source: CameraSource.Prompt,
+    });
+
+    if (photo.webPath) {
+      addPhotoToTask(id, photo.webPath);
+    }
+  } catch (e) {
+    console.log(e)
+  }
+}
 </script>
 
 <style scoped>
@@ -87,5 +114,10 @@ const backHref = computed(() =>
 }
 .status-pending {
   color: var(--ion-color-warning);
+}
+.task-photo {
+  margin-top: 8px;
+  width: 100%;
+  max-width: 320px;
 }
 </style>
