@@ -59,6 +59,7 @@
 
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
+import { Preferences } from '@capacitor/preferences'
 
 /**
  * @typedef {{ id: number, name: string, done: boolean, photo?: string }} Task
@@ -86,6 +87,7 @@ export const useTaskStore = defineStore('tasks', () => {
     const trimmed = name.trim();
     if(!trimmed) return;
     tasks.value.push({ id: nextId.value++, name: trimmed, done: false })
+    saveTasks()
   }
 
   // TODO 5: Define toggleTask(id) action
@@ -93,21 +95,43 @@ export const useTaskStore = defineStore('tasks', () => {
     // your code here
     const task = tasks.value.find(t=>t.id===id)
     if(task) task.done = !task.done
+    saveTasks()
   }
 
   // TODO 6: Define removeTask(id) action
   function removeTask(id) {
     // your code here
     tasks.value = tasks.value.filter(t=>t.id!==id)
+    saveTasks()
   }
 
   function addPhotoToTask(id, path) {
     const task = tasks.value.find(t => t.id === id)
     if (task) task.photo = path
+    saveTasks()
+  }
+
+  async function saveTasks() {
+    await Preferences.set({
+      key: 'tasks',
+      value: JSON.stringify(tasks.value),
+    })
+  }
+
+  async function loadTasks() {
+    const { value } = await Preferences.get({ key: 'tasks' })
+    try {
+      tasks.value = value ? JSON.parse(value) : []
+    } catch {
+      tasks.value = []
+    }
+    if (tasks.value.length > 0) {
+      nextId.value = Math.max(...tasks.value.map(t => t.id)) + 1
+    }
   }
 
   // TODO 7: Return everything the component needs to access
-  return { tasks, totalCount, doneCount, pendingCount, addTask, toggleTask, removeTask, addPhotoToTask }
+  return { tasks, totalCount, doneCount, pendingCount, addTask, toggleTask, removeTask, addPhotoToTask, saveTasks, loadTasks }
 })
 
 
